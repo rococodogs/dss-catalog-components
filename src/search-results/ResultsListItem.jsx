@@ -1,6 +1,5 @@
-'use strict'
-
 import React from 'react'
+import MetadataTableView from '../MetadataTableView.jsx'
 
 const T = React.PropTypes
 
@@ -21,33 +20,12 @@ const ResultsListItem = React.createClass({
 		}
 	},
 
-	renderMetadataTable: function () {
-		const dataKeys = Object.keys(this.props.metadata)
-		const dataKeysLen = dataKeys.length
+	handleFormatValue: function (value, key) {
+		if (!this.props.recordUrl || key !== this.props.linkField)
+			return value
 
-		let kids = []
-		let i = 0
-		let key, val
-
-		for (; i < dataKeysLen; i++) {
-			key = dataKeys[i]
-			val = this.props.metadata[key]
-
-			kids = kids.concat(<dt key={key+i}>{key}</dt>)
-
-			if (Array.isArray(val))
-				kids = kids.concat(val.map(v => <dd key={v+i}>{v}</dd>))
-			else
-				kids = kids.concat(<dd key={val+i}>{val || ''}</dd>)
-		}
-		
-		return (
-			<dl className="metadata-display">
-				{kids}
-			</dl>
-		)
-
-	},
+		return <a href={this.props.recordUrl}>{value}</a>
+	}
 
 	renderThumbnail: function () {
 		if (!this.props.thumbnailUrl)
@@ -71,7 +49,10 @@ const ResultsListItem = React.createClass({
 			</figure>
 
 			<section className="result-metadata-display-container">
-				{this.renderMetadataTable()}
+				<MetadataTableView 
+					metadata={metadata}
+					formatValue={this.handleFormatValue}
+				/>
 			</section>
 		</div>
 		)
