@@ -1,5 +1,5 @@
 import React from 'react'
-import { storiesOf, action } from '@kadira/storybook'
+import { storiesOf } from '@kadira/storybook'
 import MetadataTableView from '../src/MetadataTableView.jsx'
 
 const catMetadata = {
@@ -30,7 +30,9 @@ storiesOf('MetadataTableView', module)
 	})
 	.add('use `formatValue` to add links', function () {
 		const formatVal = function (v, k) {
-			if (k !== 'Subject') return v
+			if (k !== 'Subject')
+				return v
+
 			return <a href="#">{v}</a>
 		}
 

@@ -10,6 +10,7 @@ const MetadataTableView = React.createClass({
 	propTypes: {
 		metadata: T.object.isRequired,
 
+		backgroundColor: T.string,
 		borderColor: T.string,
 
 		formatTerm: T.func,
@@ -18,6 +19,7 @@ const MetadataTableView = React.createClass({
 
 	getDefaultProps: function () {
 		return {
+			backgroundColor: 'transparent',
 			borderColor: '#bbb',
 			borderWidth: '1px',
 			borderStyle: 'solid',
@@ -123,7 +125,11 @@ const MetadataTableView = React.createClass({
 
 	render: function () {
 		return (
-		<dl className="metadata-table-view">
+		<dl className="metadata-table-view" style={{
+			backgroundColor: this.props.backgroundColor,
+			margin: 0,
+			padding: '5px',
+		}}>
 			{this.renderMetadata()}
 		</dl>
 		)

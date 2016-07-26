@@ -27,7 +27,7 @@ const defaultProps = {
 	onShowMore: action('show more'),
 }
 
-storiesOf('FacetList', module)
+storiesOf('facets/FacetList', module)
 	.add('basic facet list, meets maxItems default of 5', () => (
 		<FacetList {...defaultProps} />
 	))

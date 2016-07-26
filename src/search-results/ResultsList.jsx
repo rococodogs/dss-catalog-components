@@ -9,7 +9,8 @@ const reflective = function (a) { return a }
 const ResultsList = React.createClass({
 	propTypes: {
 		items: T.arrayOf(T.shape({
-			id: T.oneOfType([T.string, T.number]),
+			id: T.oneOfType([T.string, T.number]).isRequired,
+			data: T.object,
 		})).isRequired,
 
 		buildThumbnailUrl: T.func,
@@ -25,33 +26,70 @@ const ResultsList = React.createClass({
 			limit: 10,
 			offset: 0,
 
-			buildThumbnailUrl: reflective,
-			buildRecordUrl: reflective,
+			buildThumbnailUrl: null,
+			buildRecordUrl: null,
 			linkOnField: 'Title',
+		}
+	},
+
+	handleRecordUrl: function (index, id) {
+		const item = this.props.items[index]
+		if (typeof this.props.buildRecordUrl === 'function') {
+			return this.props.buildThumbnailUrl.call(null, item)
+		}
+
+		if (item.recordUrl) {
+			return item.recordUrl
+		}
+	},
+
+	handleThumbnailUrl: function (index, id) {
+		const item = this.props.items[index]
+
+		if (typeof this.props.buildThumbnailUrl === 'function') {
+			return this.props.buildThumbnailUrl.call(null, item)
+		}
+
+		if (item.thumbnailUrl) {
+			return item.thumbnailUrl
 		}
 	},
 
 	renderResults: function () {
 		// in the event that our result set is smaller than our limit
 		// we'll choose that as the outer-bounds of our iterator
-		const len = this.props.items.length
-		const limit = len < this.props.limit ? len : this.props.limit
+		const length = this.props.items.length
 		const offset = this.props.offset
+		const limit = this.props.limit
+
+		let max = limit + offset
+
+		if (max > length)
+			max = length
+
+		// counter the offset from <li> to keep the ResultsListItem element
+		// even with the <ol>'s numbering
+		const updatedStyles = {
+			container: {
+				marginBottom: '20px',
+				marginTop: '-20px',
+			}
+		}
 
 		const out = []
 		let item, idx, thumbnailUrl, recordUrl
 
-		for (let i = 0; i < limit; i++) {
-			idx = i + offset
+		for (let idx = offset; idx < max; idx++) {
 			item = this.props.items[idx]
 
-			out[i] = (
+			out.push(
 				<li id={idx} key={item.id+idx}>
 					<ResultsListItem
 						linkField={this.props.linkOnField}
-						metadata={item}
-						recordUrl={this.props.buildRecordUrl.call(null, item.id)}
-						thumbnailUrl={this.props.buildThumbnailUrl.call(null, item.id)}
+						metadata={item.data}
+						recordUrl={this.handleRecordUrl.call(null, idx, item.id)}
+						thumbnailUrl={this.handleThumbnailUrl.call(null, idx, item.id)}
+						styles={updatedStyles}
 					/>
 				</li>
 			)
