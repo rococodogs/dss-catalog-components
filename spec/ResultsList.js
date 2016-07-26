@@ -1,12 +1,13 @@
 'use strict'
 
 import React from 'react'
-import TestUtils from 'react-addons-test-utils'
 import ResultsList from '../src/search-results/ResultsList.jsx'
+
+import { shallow } from 'enzyme'
 
 const searchResults = (function () {
 	const out = []
-	var i = 0
+	let i = 0
 
 	while (i < 15) {
 		out.push({id: String(i++)})
@@ -17,27 +18,26 @@ const searchResults = (function () {
 
 describe('ResultsList', function () {
 	it('renders as an ordered list', function () {
-		const result = renderEl(<ResultsList items={searchResults} />)
+		const result = shallow(<ResultsList items={searchResults} />)
 
-		expect(result.type).toBe('ol')
+		expect(result.type()).toBe('ol')
 	})
 
 	it('renders n elements when specifying `limit`', function () {
 		const count = Math.floor(Math.random() * searchResults.length)
-
-		const result = renderEl(
+		const result = shallow(
 			<ResultsList
 				items={searchResults}
 				limit={count}
 			/>
 		)
 
-		expect(React.Children.count(result.props.children)).toBe(count)
+		expect(result.find('li').length).toBe(count)
 	})
 
 	it('begins at the nth element when specifiying `offset`', function () {
 		const limit = 3
-		const start = Math.floor(Math.random() * searchResults.length - limit)
+		const start = Math.floor(Math.random() * (searchResults.length - limit))
 
 		const el = (
 			<ResultsList
@@ -47,25 +47,8 @@ describe('ResultsList', function () {
 			/>
 		)
 
-		const result = renderEl(el)
-		const kids = React.Children.toArray(result.props.children)
-
-		expect(kids.length).toEqual(limit)
-
-		let count = 0
-
-		React.Children.forEach(kids, (c, idx) => {
-			const id = c.props.id
-			const expected = start + idx
-
-			expect(id).toEqual(expected)
+		shallow(el).children().forEach(function (c, idx) {
+			expect(c.prop('id')).toEqual(idx + start)
 		})
 	})
 })
-
-function renderEl(el) {
-	const renderer = TestUtils.createRenderer()
-	renderer.render(el)
-
-	return renderer.getRenderOutput()
-}
