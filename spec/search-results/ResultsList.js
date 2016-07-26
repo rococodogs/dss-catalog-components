@@ -1,8 +1,7 @@
 'use strict'
 
 import React from 'react'
-import ResultsList from '../src/search-results/ResultsList.jsx'
-
+import ResultsList from '../../src/search-results/ResultsList.jsx'
 import { shallow } from 'enzyme'
 
 const searchResults = (function () {

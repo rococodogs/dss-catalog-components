@@ -1,7 +1,7 @@
 'use strict'
 
 import React from 'react'
-import ResultsListItem from '../src/search-results/ResultsListItem.jsx'
+import ResultsListItem from '../../src/search-results/ResultsListItem.jsx'
 import { shallow } from 'enzyme'
 
 const metadata = {
