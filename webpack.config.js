@@ -7,14 +7,21 @@ module.exports = {
 
 	module: {
 		loaders: [
-			{
-				test: /\.jsx?$/,
-				exclude: /node_modules/,
-				loader: 'babel',
-				query: {
-					presets: ['es2015', 'react']
-				}
-			}
+      {
+          test: /\.jsx?$/,
+          include: path.resolve(__dirname, './'),
+          exclude: /node_modules/,
+          loader: 'babel',
+          query: {
+              presets: ['es2015', 'react'],
+          }
+      },
+      {
+          test: /\.json$/,
+          include: path.resolve(__dirname, './'),
+          exclude: /node_modules/,
+          loader: 'json',
+      },
 		]
 	}
 }

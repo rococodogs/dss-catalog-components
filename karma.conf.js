@@ -17,23 +17,20 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-        'webpack.tests.js',
-    ],
-
-
-    // list of files to exclude
-    exclude: [
-    ],
-
+        './webpack.tests.js',
+    ], 
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-        'webpack.tests.js': ['webpack', 'sourcemap']
+        './webpack.tests.js': ['webpack', 'sourcemap']
     },
 
     webpack: {
         devtool: 'inline-source-map',
+        resolve: {
+            extensions: ['', '.js', '.jsx', '.json'],
+        },
         module: {
             loaders: [
                 {
@@ -44,9 +41,18 @@ module.exports = function(config) {
                     query: {
                         presets: ['es2015', 'react'],
                     }
+                },
+                {
+                    test: /\.json$/,
+                    loader: 'json',
                 }
             ]
-        }
+        },
+        externals: {
+            'react/addons': true,
+            'react/lib/ExecutionEnvironment': true,
+            'react/lib/ReactContext': 'window',
+        },
     },
 
     webpackMiddleware: {
