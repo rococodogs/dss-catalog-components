@@ -23,49 +23,54 @@ const ResultsListItem = React.createClass({
 
 	renderMetadataTable: function () {
 		const dataKeys = Object.keys(this.props.metadata)
+		const dataKeysLen = dataKeys.length
 
+		let kids = []
+		let i = 0
+		let key, val
+
+		for (; i < dataKeysLen; i++) {
+			key = dataKeys[i]
+			val = this.props.metadata[key]
+
+			kids = kids.concat(<dt key={key+i}>{key}</dt>)
+
+			if (Array.isArray(val))
+				kids = kids.concat(val.map(v => <dd key={v+i}>{v}</dd>))
+			else
+				kids = kids.concat(<dd key={val+i}>{val || ''}</dd>)
+		}
+		
 		return (
-			<table className="search-result-data-table">
-				<tbody>
-					{dataKeys.map((key, idx) => {
-						const val = this.props.metadata[key]
-						
-						return (
-							<tr key={key}>
-								<th>{key}</th>
-								<td>{key === this.props.linkField 
-										 ? <a href={this.props.recordUrl}>{val}</a>
-										 : val}
-								</td>
-							</tr>
-						)
-					})}
-				</tbody>
-			</table>
+			<dl className="metadata-display">
+				{kids}
+			</dl>
 		)
+
 	},
 
 	renderThumbnail: function () {
-		if (!this.props.thumbnail) return ''
+		if (!this.props.thumbnailUrl)
+			return ''
 
-		return (
-			<a href={this.props.recordUrl}>
-				<img 
-					className="search-results-thumbnail"
-					src={this.props.thumbnailUrl} 
-					/>
-			</a>
+		const img = (
+			<img className="result-thumbnail" src={this.props.thumbnailUrl}/>
 		)
+
+		if (!this.props.recordUrl) 
+			return img
+
+		return <a href={this.props.recordUrl}>{img}</a>
 	},
 
 	render: function () {
 		return (
-		<div className="search-result-item">
-			<section className="search-result-item-thumbnail">
+		<div className="result-container">
+			<figure className="result-item-thumbnail">
 				{this.renderThumbnail()}
-			</section>
+			</figure>
 
-			<section className="search-result-item-data">
+			<section className="result-metadata-display-container">
 				{this.renderMetadataTable()}
 			</section>
 		</div>
